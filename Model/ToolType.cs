@@ -12,6 +12,8 @@ namespace toolservice.Model
         public string description{get;set;}
         [Column("thingGroupIds", TypeName = "integer[]")]
         public int[] thingGroupIds{get;set;}
+        [Required]
+        public string status{get;set;}
 
     }
 }

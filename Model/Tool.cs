@@ -16,5 +16,7 @@ namespace toolservice.Model
         public string unitOfMeasurement{get;set;}
         [Required]
         public ToolType type{get;set;}
+        [Required]
+        public string status{get;set;}
     }
 }
