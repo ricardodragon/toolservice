@@ -4,7 +4,7 @@ using toolservice.Model;
 
 namespace toolservice.Service.Interface
 {
-    public interface IToolType
+    public interface IToolTypeService
     {
          Task<List<ToolType>> getToolTypes(int startat,int quantity);
          Task<ToolType> getToolType(int toolTypeId);

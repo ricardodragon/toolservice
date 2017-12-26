@@ -36,7 +36,7 @@ namespace toolservice
                            .AllowAnyHeader();
                 }));
             services.AddSingleton<IConfiguration>(Configuration);
-            services.AddTransient<IToolType,ToolTypeService>();
+            services.AddTransient<IToolTypeService,ToolTypeService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                options.UseNpgsql(Configuration.GetConnectionString("ToolDB")));
             services.AddMvc();

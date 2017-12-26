@@ -9,7 +9,7 @@ using toolservice.Model;
 
 namespace toolservice.Service
 {
-    public class ToolTypeService : IToolType
+    public class ToolTypeService : IToolTypeService
     {
         private readonly ApplicationDbContext _context;
 
@@ -64,9 +64,9 @@ namespace toolservice.Service
                 return null;
             }
 
-            _context.ToolTypes.Update(tooltypeDB);
+            _context.ToolTypes.Update(toolType);
             await _context.SaveChangesAsync();
-            return tooltypeDB;
+            return toolType;
         }
 
         public async Task<ToolType> deleteToolType(int toolTypeId)
