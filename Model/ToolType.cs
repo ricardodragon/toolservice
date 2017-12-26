@@ -6,6 +6,7 @@ namespace toolservice.Model
     public class ToolType
     {
         public int id{get;set;}
+        [Required]
         [MaxLength(50)]
         public string name{get;set;}
         [MaxLength(100)]

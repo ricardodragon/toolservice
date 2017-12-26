@@ -37,6 +37,7 @@ namespace toolservice
                 }));
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddTransient<IToolTypeService,ToolTypeService>();
+            services.AddTransient<IToolService,ToolService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                options.UseNpgsql(Configuration.GetConnectionString("ToolDB")));
             services.AddMvc();

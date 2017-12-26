@@ -78,7 +78,7 @@ namespace toolservice.Service
                 return null;
             }
 
-            toolDb.status = "desactive";
+            toolDb.status = "inactive";
 
             toolDb = await updateTool(toolId,toolDb);
 
