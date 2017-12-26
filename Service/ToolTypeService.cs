@@ -22,6 +22,12 @@ namespace toolservice.Service
             _context = context;
         }
 
+        /// <summary>
+        /// Get in database 
+        /// </summary>
+        /// <param name="startat">value initial</param>
+        /// <param name="quantity">quantity of object return</param>
+        /// <returns>list tooltypes</returns>
         public async Task<List<ToolType>> getToolTypes(int startat,int quantity)
         {
             var toolTypeId = await _context.ToolTypes
