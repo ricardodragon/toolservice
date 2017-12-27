@@ -12,14 +12,16 @@ namespace toolservice.Service
     public class ToolService : IToolService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IToolTypeService _toolTypeService;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="context">Context DB</param>
-        public ToolService(ApplicationDbContext context)
+        public ToolService(ApplicationDbContext context,IToolTypeService toolTypeService)
         {
             _context = context;
+            _toolTypeService = toolTypeService;
         }
 
         public async Task<List<Tool>> getTools(int startat,int quantity)
@@ -46,6 +48,9 @@ namespace toolservice.Service
             var tool = await _context.Tools                   
                      .Where(x => x.id == toolId)
                      .FirstOrDefaultAsync();
+
+            var toolType = await _toolTypeService.getToolType(tool.typeId.Value);
+            tool.typeName = toolType.name;
 
             
             return tool;

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace toolservice.Model
 {
     public class Tool
@@ -15,7 +17,9 @@ namespace toolservice.Model
         [Required]
         public string unitOfMeasurement{get;set;}
         [Required]
-        public int typeId{get;set;}
+        public int? typeId{get;set;}
+        [NotMapped]
+        public string typeName{get;set;}
         [Required]
         public string status{get;set;}
     }
