@@ -67,7 +67,7 @@ namespace toolservice.Service
             if (toolId != toolDB.id && toolDB == null)
             {
                 return null;
-            }
+            }           
 
             _context.Tools.Update(tool);
             await _context.SaveChangesAsync();
@@ -96,6 +96,7 @@ namespace toolservice.Service
             await _context.SaveChangesAsync();
             return tool;
         }
+
 
 
         

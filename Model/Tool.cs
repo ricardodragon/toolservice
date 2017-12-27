@@ -17,6 +17,7 @@ namespace toolservice.Model
         [Required]
         public string unitOfMeasurement{get;set;}
         [Required]
+        [ToolTypeValidation]
         public int? typeId{get;set;}
         [NotMapped]
         public string typeName{get;set;}
