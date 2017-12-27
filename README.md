@@ -59,6 +59,9 @@ this used for CRUD of tool type
 - typeId: id of tool type
     - Integer
     - Required
+- typeName: name of tool type 
+    - String
+    - used only get (informative)
 - status: status of tool
 
 ### JSON Example
@@ -71,6 +74,7 @@ this used for CRUD of tool type
     "currentLife": 0,
     "unitOfMeasurement": "minute",
     "typeId": 1,
+    "typeName": "Tipo",
     "status": "active"
 }
 ```
