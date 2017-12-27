@@ -38,4 +38,51 @@ this used for CRUD of tool type
         * Body: json tooltype
     * DELETE: inactive tooltype
 
+## Tool
+this used for CRUD of tool type
+- id: id tool type.
+    - Integer
+    - Ignored on Create, mandatory on the other methods
+- name: name of tool type
+    - String (50 characters)
+    - Required
+- description: description of tool type
+    - String (100 characters)
+- lifeCycle: life time total
+    - Double
+    - Required
+- currentLife: life consumed of tool
+    - Double
+- unitOfMeasurement: unit of measurement of life
+    - String
+    - Required
+- typeId: id of tool type
+    - Integer
+    - Required
+- status: status of tool
+
+### JSON Example
+```json
+{
+    "id": 1,
+    "name": "Ferramenta",
+    "description": "TESTE ferramenta",
+    "lifeCycle": 100,
+    "currentLife": 0,
+    "unitOfMeasurement": "minute",
+    "typeId": 1,
+    "status": "active"
+}
+```
+
+## Url Tool
+* api/tool/{optional=startat}{optional=quantity}
+    * GET: Return list tool
+    * POST: Create tool
+* api/tool/{id}
+    * GET: Return tool
+    * PUT: Update tool
+        * Body: json tool
+    * DELETE: inactive tool
+
 
