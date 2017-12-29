@@ -11,6 +11,10 @@ namespace toolservice.Model
         public string name{get;set;}
         [MaxLength(100)]
         public string description{get;set;}
+        [MaxLength(100)]
+        public string serialNumber{get;set;}
+        [MaxLength(100)]
+        public string code{get;set;}
         [Required]
         public double lifeCycle{get;set;}
         public double currentLife{get;set;}

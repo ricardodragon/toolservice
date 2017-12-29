@@ -19,13 +19,23 @@ namespace toolservice.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetList([FromQuery]int startat,[FromQuery]int quantity)
+        public async Task<IActionResult> GetList([FromQuery]int startat,[FromQuery]int quantity,
+        [FromQuery]string fieldFilter, [FromQuery]string fieldValue,
+            [FromQuery]string orderField, [FromQuery]string order)
         {
             try{
+            
+            var fieldFilterEnum = ToolFieldEnum.Default;
+            Enum.TryParse(fieldFilter, true, out fieldFilterEnum);
+            var orderFieldEnum = ToolFieldEnum.Default;
+            Enum.TryParse(orderField, true, out orderFieldEnum);
+            var orderEnumValue = OrderEnum.Ascending;
+            Enum.TryParse(order, true, out orderEnumValue);
+
             if (quantity == 0)
                 quantity = 50;
-            var tools = await _toolService.getTools(startat,quantity);
-            return Ok(tools);
+            var (tools,count) = await _toolService.getTools(startat,quantity,fieldFilterEnum,fieldValue,orderFieldEnum,orderEnumValue);
+            return Ok(new { values = tools, total = count });
             }
             catch(Exception ex)
             {
