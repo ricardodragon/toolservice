@@ -80,8 +80,19 @@ this used for CRUD of tool type
 ```
 
 ## Url Tool
-* api/tool/{optional=startat}{optional=quantity}
+* api/tool/{optional=startat}{optional=quantity}{optional=orderField}{optional=order}{optional=fieldFilter}{optional=fieldValue}
     * GET: Return list tool
+        * startat: represent where the list starts t the database (Default=0)
+        * quantity: number of resuls in the query (Default=50)
+        * orderField: Field in which the list will be order by (Possible Values:
+            Name,Description,SerialNumber,Code,UnitOfMeasurement,TypeName
+            Status)(Default=id)
+        * order: Represent the order of the listing (Possible Values: ascending,
+            descending)(Default=Ascending)
+        * fieldFilter: represents the field that will be seached (Possible Values:
+            Name,Description,SerialNumber,Code,UnitOfMeasurement,TypeName
+            Status) (Default=null)
+        * fieldValue: represents de valued searched on the field (Default=null)
     * POST: Create tool
 * api/tool/{id}
     * GET: Return tool
