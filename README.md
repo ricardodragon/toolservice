@@ -48,6 +48,10 @@ this used for CRUD of tool type
     - Required
 - description: description of tool type
     - String (100 characters)
+- serialNumber: serial number of tool
+    - String (100 characters)
+- code: code of tool
+    - String (100 characters)
 - lifeCycle: life time total
     - Double
     - Required
@@ -70,6 +74,8 @@ this used for CRUD of tool type
     "id": 1,
     "name": "Ferramenta",
     "description": "TESTE ferramenta",
+    "serialNumber": null,
+    "code": null,
     "lifeCycle": 100,
     "currentLife": 0,
     "unitOfMeasurement": "minute",
