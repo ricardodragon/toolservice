@@ -259,6 +259,6 @@ These are the fields of the StateConfiguration and it's constrains:
 
 * /api/tool/StateTransitionHistory/{toolid}{from}{to}
   * GET: Return list tool history
-  * toolid: Mandatory Id of the searched tool
-  * from: Initial date of the search (Default: 00:00 of the current Day)
-  * to: End date of the search (Default: 23:59 of the current Day)
+    * toolid: Mandatory Id of the searched tool
+    * from: Initial date of the search (Default: 00:00 of the current Day)
+    * to: End date of the search (Default: 23:59 of the current Day)
