@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using toolservice.Service.Interface;
 using toolservice.Data;
 using toolservice.Model;
+using System.Net;
 
 namespace toolservice.Service
 {
@@ -13,21 +14,23 @@ namespace toolservice.Service
     {
         private readonly ApplicationDbContext _context;
         private readonly IToolTypeService _toolTypeService;
-
+        private readonly IThingService _thingService;
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="context">Context DB</param>
-        public ToolService(ApplicationDbContext context,IToolTypeService toolTypeService)
+        public ToolService(ApplicationDbContext context, IToolTypeService toolTypeService,
+             IThingService thingService)
         {
             _context = context;
             _toolTypeService = toolTypeService;
+            _thingService = thingService;
         }
 
-        public async Task<(List<Tool>,int)> getTools(int startat,int quantity, ToolFieldEnum fieldFilter, 
+        public async Task<(List<Tool>, int)> getTools(int startat, int quantity, ToolFieldEnum fieldFilter,
         string fieldValue, ToolFieldEnum orderField, OrderEnum order)
         {
-            var queryTool = _context.Tools.Where(x=>x.id>0);
+            var queryTool = _context.Tools.Where(x => x.id > 0);
             queryTool = ApplyFilter(queryTool, fieldFilter, fieldValue);
             queryTool = ApplyOrder(queryTool, orderField, order);
             var toolId = await queryTool
@@ -35,11 +38,11 @@ namespace toolservice.Service
             .Select(x => x.id)
             .ToListAsync();
 
-            var queryToolCount = _context.Tools.Where(x=>x.id>0);
+            var queryToolCount = _context.Tools.Where(x => x.id > 0);
             queryToolCount = ApplyFilter(queryToolCount, fieldFilter, fieldValue);
             queryToolCount = ApplyOrder(queryToolCount, orderField, order);
             var totalCount = await queryToolCount.CountAsync();
-           
+
             List<Tool> tools = new List<Tool>();
             foreach (var item in toolId)
             {
@@ -48,35 +51,41 @@ namespace toolservice.Service
                     tools.Add(tool);
             }
 
-            return (tools,totalCount);
+            return (tools, totalCount);
 
         }
 
         public async Task<Tool> getTool(int toolId)
         {
-            var tool = await _context.Tools                   
+            var tool = await _context.Tools
                      .Where(x => x.id == toolId)
                      .FirstOrDefaultAsync();
 
             var toolType = await _toolTypeService.getToolType(tool.typeId.Value);
             tool.typeName = toolType.name;
 
-            
+            if (tool.currentThingId != null)
+            {
+                var (thing, status) = await _thingService.getThing(tool.currentThingId.Value);
+                if (status == HttpStatusCode.OK)
+                    tool.currentThing = thing;
+            }
             return tool;
         }
 
-        public async Task<Tool> updateTool(int toolId,Tool tool)
+        public async Task<Tool> updateTool(int toolId, Tool tool)
         {
-            var toolDB = await _context.Tools                    
-                     .Where(x => x.id == toolId )
+            var toolDB = await _context.Tools
+                     .Where(x => x.id == toolId)
                      .AsNoTracking()
                      .FirstOrDefaultAsync();
 
+            tool.currentThingId = toolDB.currentThingId;
 
             if (toolId != toolDB.id && toolDB == null)
             {
                 return null;
-            }           
+            }
 
             _context.Tools.Update(tool);
             await _context.SaveChangesAsync();
@@ -87,21 +96,22 @@ namespace toolservice.Service
         {
             var toolDb = await getTool(toolId);
 
-            if(toolDb == null)
+            if (toolDb == null)
             {
                 return null;
             }
 
             toolDb.status = "inactive";
 
-            toolDb = await updateTool(toolId,toolDb);
+            toolDb = await updateTool(toolId, toolDb);
 
             return toolDb;
         }
 
         public async Task<Tool> addTool(Tool tool)
         {
-             _context.Tools.Add(tool);
+            tool.currentThingId = null;
+            _context.Tools.Add(tool);
             await _context.SaveChangesAsync();
             return tool;
         }
@@ -189,6 +199,6 @@ namespace toolservice.Service
 
 
 
-        
+
     }
 }

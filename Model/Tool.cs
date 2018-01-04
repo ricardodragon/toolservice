@@ -28,5 +28,9 @@ namespace toolservice.Model
         public string typeName { get; set; }
         [Required]
         public string status { get; set; }
+        public int? currentThingId { get; set; }
+        [NotMapped]
+        public Thing currentThing { get; set; }
+
     }
 }

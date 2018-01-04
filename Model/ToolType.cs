@@ -5,16 +5,18 @@ namespace toolservice.Model
 {
     public class ToolType
     {
-        public int id{get;set;}
+        public int id { get; set; }
         [Required]
         [MaxLength(50)]
-        public string name{get;set;}
+        public string name { get; set; }
         [MaxLength(100)]
-        public string description{get;set;}
+        public string description { get; set; }
         [Column("thingGroupIds", TypeName = "integer[]")]
-        public int[] thingGroupIds{get;set;}
+        public int[] thingGroupIds { get; set; }
         [Required]
-        public string status{get;set;}
+        public string status { get; set; }
+        [NotMapped]
+        public IList<ThingGroup> thingGroups { get; set; }
 
     }
 }

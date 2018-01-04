@@ -11,9 +11,10 @@ using toolservice.Data;
 namespace toolservice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180104170920_ThingAssociation")]
+    partial class ThingAssociation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,6 +112,8 @@ namespace toolservice.Migrations
 
                     b.Property<string>("status")
                         .IsRequired();
+
+                    b.Property<int?>("thingGroupId");
 
                     b.Property<int[]>("thingGroupIds")
                         .HasColumnName("thingGroupIds")

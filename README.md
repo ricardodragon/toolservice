@@ -26,7 +26,7 @@ this used for CRUD of tool type
   "name": "Tipo",
   "description": "Criação tipo para as ferramentas update",
   "thingGroupIds": [2],
-  "status": "active"
+  "status": "available"
 }
 ```
 
@@ -72,6 +72,9 @@ this used for CRUD of tool type
   * String
   * used only get (informative)
 * status: status of tool
+* currentThingId: Id of the current Thing that is using the tool
+  * Ignored on Create and Update
+  * Can only be changed when associating tools with things
 
 ### JSON Example
 
@@ -87,7 +90,8 @@ this used for CRUD of tool type
   "unitOfMeasurement": "minute",
   "typeId": 1,
   "typeName": "Tipo",
-  "status": "active"
+  "status": "available",
+  "currentThingId": 1
 }
 ```
 
@@ -112,6 +116,31 @@ this used for CRUD of tool type
   * PUT: Update tool
     * Body: json tool
   * DELETE: inactive tool
+
+# GatewayAPI
+
+API Responsible to provide access to information nedeed to compose the recipe
+from other APIs
+
+## URLs
+
+* gateway/thinggroups/{optional=startat}{optional=quantity}
+
+  * Get: Return List of Groups of Things
+    * startat: represent where the list starts at the database (Default=0)
+    * quantity: number of resuls in the query (Default=50)
+
+* gateway/thinggroups/{id}
+
+  * Get: Return Group of Things with thingGroupId = ID
+
+* gateway/thinggroups/attachedthings/{groupid}
+
+  * Get: List of Thing inside the group where thingGroupId = ID
+
+* gateway/things/{id}
+
+  * Get: Thing where thingId = ID
 
 # StateConfigurationAPI
 

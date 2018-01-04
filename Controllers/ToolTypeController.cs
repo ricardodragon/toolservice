@@ -13,21 +13,22 @@ namespace toolservice.Controllers
     {
         private readonly IToolTypeService _toolTypeService;
 
-        public ToolTypeController (IToolTypeService toolTypeService)
+        public ToolTypeController(IToolTypeService toolTypeService)
         {
             _toolTypeService = toolTypeService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetList([FromQuery]int startat,[FromQuery]int quantity)
+        public async Task<IActionResult> GetList([FromQuery]int startat, [FromQuery]int quantity)
         {
-            try{
-            if (quantity == 0)
-                quantity = 50;
-            var toolTypes = await _toolTypeService.getToolTypes(startat,quantity);
-            return Ok(toolTypes);
+            try
+            {
+                if (quantity == 0)
+                    quantity = 50;
+                var toolTypes = await _toolTypeService.getToolTypes(startat, quantity);
+                return Ok(toolTypes);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
@@ -36,11 +37,12 @@ namespace toolservice.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetId(int id)
         {
-            try{
+            try
+            {
                 var toolType = await _toolTypeService.getToolType(id);
                 return Ok(toolType);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
@@ -51,30 +53,30 @@ namespace toolservice.Controllers
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
-                toolType.id = 0;
+                    toolType.id = 0;
 
                     toolType = await _toolTypeService.addToolType(toolType);
-                    return Created($"api/Extract/{toolType.id}",toolType);
+                    return Created($"api/Extract/{toolType.id}", toolType);
                 }
                 return BadRequest(ModelState);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id,[FromBody]ToolType toolType)
+        public async Task<IActionResult> Put(int id, [FromBody]ToolType toolType)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
 
-                    var toolTypeDb = await _toolTypeService.updateToolType(id,toolType);
+                    var toolTypeDb = await _toolTypeService.updateToolType(id, toolType);
                     if (toolTypeDb == null)
                     {
                         return NotFound();
@@ -83,7 +85,7 @@ namespace toolservice.Controllers
                 }
                 return BadRequest(ModelState);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
@@ -92,9 +94,10 @@ namespace toolservice.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            try{
+            try
+            {
 
-                if (id>0)
+                if (id > 0)
                 {
 
                     var toolTypeDb = await _toolTypeService.deleteToolType(id);
@@ -106,12 +109,12 @@ namespace toolservice.Controllers
                 }
                 return BadRequest(ModelState);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
 
-        
+
     }
 }

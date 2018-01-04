@@ -6,20 +6,23 @@ using Microsoft.EntityFrameworkCore;
 using toolservice.Service.Interface;
 using toolservice.Data;
 using toolservice.Model;
+using System.Net;
 
 namespace toolservice.Service
 {
     public class ToolTypeService : IToolTypeService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IThingGroupService _thingGroupService;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="context">Context DB</param>
-        public ToolTypeService(ApplicationDbContext context)
+        public ToolTypeService(ApplicationDbContext context, IThingGroupService thingGroupService)
         {
             _context = context;
+            _thingGroupService = thingGroupService;
         }
 
         /// <summary>
@@ -28,7 +31,7 @@ namespace toolservice.Service
         /// <param name="startat">value initial</param>
         /// <param name="quantity">quantity of object return</param>
         /// <returns>list tooltypes</returns>
-        public async Task<List<ToolType>> getToolTypes(int startat,int quantity)
+        public async Task<List<ToolType>> getToolTypes(int startat, int quantity)
         {
             var toolTypeId = await _context.ToolTypes
                      .OrderBy(x => x.id)
@@ -49,18 +52,23 @@ namespace toolservice.Service
 
         public async Task<ToolType> getToolType(int toolTypeId)
         {
-            var toolType = await _context.ToolTypes                   
+            var toolType = await _context.ToolTypes
                      .Where(x => x.id == toolTypeId)
                      .FirstOrDefaultAsync();
 
-            
+            if (toolType.thingGroupIds != null && toolType.thingGroupIds.Length != 0)
+            {
+                var (group, status) = await _thingGroupService.getGroupsList(toolType.thingGroupIds);
+                if (status == HttpStatusCode.OK)
+                    toolType.thingGroups = group;
+            }
             return toolType;
         }
 
-        public async Task<ToolType> updateToolType(int toolTypeId,ToolType toolType)
+        public async Task<ToolType> updateToolType(int toolTypeId, ToolType toolType)
         {
-            var tooltypeDB = await _context.ToolTypes                    
-                     .Where(x => x.id == toolTypeId )
+            var tooltypeDB = await _context.ToolTypes
+                     .Where(x => x.id == toolTypeId)
                      .AsNoTracking()
                      .FirstOrDefaultAsync();
 
@@ -79,21 +87,21 @@ namespace toolservice.Service
         {
             var toolTypeDb = await getToolType(toolTypeId);
 
-            if(toolTypeDb == null)
+            if (toolTypeDb == null)
             {
                 return null;
             }
 
             toolTypeDb.status = "inactive";
 
-            toolTypeDb = await updateToolType(toolTypeId,toolTypeDb);
+            toolTypeDb = await updateToolType(toolTypeId, toolTypeDb);
 
             return toolTypeDb;
         }
 
         public async Task<ToolType> addToolType(ToolType tooltype)
         {
-             _context.ToolTypes.Add(tooltype);
+            _context.ToolTypes.Add(tooltype);
             await _context.SaveChangesAsync();
             return tooltype;
         }

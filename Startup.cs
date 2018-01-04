@@ -13,6 +13,7 @@ using toolservice.Service;
 using toolservice.Service.Interface;
 using toolservice.Data;
 using toolservice.Actions;
+using Newtonsoft.Json;
 
 namespace toolservice
 {
@@ -36,7 +37,8 @@ namespace toolservice
                            .AllowAnyHeader();
                 }));
             services.AddSingleton<IConfiguration>(Configuration);
-
+            services.AddSingleton<IThingService, ThingService>();
+            services.AddSingleton<IThingGroupService, ThingGroupService>();
             services.AddTransient<IToolTypeService, ToolTypeService>();
             services.AddTransient<IToolService, ToolService>();
             services.AddTransient<IStateTransitionHistoryService, StateTransitionHistoryService>();
@@ -51,7 +53,10 @@ namespace toolservice
                 }
             );
 
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(options =>
+                {
+                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                }); ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
