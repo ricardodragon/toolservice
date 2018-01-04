@@ -36,18 +36,21 @@ namespace toolservice
                            .AllowAnyHeader();
                 }));
             services.AddSingleton<IConfiguration>(Configuration);
+
+            services.AddTransient<IToolTypeService, ToolTypeService>();
+            services.AddTransient<IToolService, ToolService>();
+            services.AddTransient<IStateTransitionHistoryService, StateTransitionHistoryService>();
+            services.AddDbContext<ApplicationDbContext>(options =>
+               options.UseNpgsql(Configuration.GetConnectionString("ToolDB")));
+            services.AddTransient<IStateManagementService, StateManagementService>();
             services.AddSingleton<IList<IPostStateChangeAction>>(sp =>
-                new List<IPostStateChangeAction>{
+                 new List<IPostStateChangeAction>{
 
                     new TriggerAction(Configuration)
 
-                    }
+                }
             );
-            services.AddTransient<IToolTypeService, ToolTypeService>();
-            services.AddTransient<IToolService, ToolService>();
-            services.AddTransient<IStateManagementService, StateManagementService>();
-            services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseNpgsql(Configuration.GetConnectionString("ToolDB")));
+
             services.AddMvc();
         }
 

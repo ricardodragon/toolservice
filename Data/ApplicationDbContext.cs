@@ -12,6 +12,9 @@ namespace toolservice.Data
 
         public DbSet<ToolType> ToolTypes { get; set; }
         public DbSet<Tool> Tools { get; set; }
+        public DbSet<StateTransitionHistory> StateTransitionHistories { get; set; }
+
+        public DbSet<Justification> Justifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
