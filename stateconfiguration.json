@@ -1,0 +1,34 @@
+{
+  "states": [
+    {
+      "state": "available",
+      "possibleNextStates": [
+        "in_use",
+        "in_maintenance",
+        "not_available",
+        "inactive"
+      ],
+      "needsJustification": false
+    },
+    {
+      "state": "in_use",
+      "possibleNextStates": ["available", "in_maintenance", "not_available"],
+      "needsJustification": false
+    },
+    {
+      "state": "in_maintenance",
+      "possibleNextStates": ["available", "not_available", "inactive"],
+      "needsJustification": true
+    },
+    {
+      "state": "not_available",
+      "possibleNextStates": ["available"],
+      "needsJustification": true
+    },
+    {
+      "state": "inactive",
+      "possibleNextStates": [],
+      "needsJustification": true
+    }
+  ]
+}

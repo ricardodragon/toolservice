@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\" />
+    <None Include="stateconfiguration.json" CopyToPublishDirectory="Always" />
   </ItemGroup>
 
   <ItemGroup>

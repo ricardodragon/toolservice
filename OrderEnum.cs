@@ -1,4 +1,4 @@
-namespace toolservice.Model
+namespace toolservice
 {
     public enum OrderEnum
     {

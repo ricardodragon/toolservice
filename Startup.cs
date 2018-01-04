@@ -12,18 +12,18 @@ using Microsoft.EntityFrameworkCore;
 using toolservice.Service;
 using toolservice.Service.Interface;
 using toolservice.Data;
-
-
+using toolservice.Actions;
 
 namespace toolservice
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
-        }
+            this.Configuration = configuration;
 
+        }
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -36,8 +36,16 @@ namespace toolservice
                            .AllowAnyHeader();
                 }));
             services.AddSingleton<IConfiguration>(Configuration);
-            services.AddTransient<IToolTypeService,ToolTypeService>();
-            services.AddTransient<IToolService,ToolService>();
+            services.AddSingleton<IList<IPostStateChangeAction>>(sp =>
+                new List<IPostStateChangeAction>{
+
+                    new TriggerAction(Configuration)
+
+                    }
+            );
+            services.AddTransient<IToolTypeService, ToolTypeService>();
+            services.AddTransient<IToolService, ToolService>();
+            services.AddTransient<IStateManagementService, StateManagementService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                options.UseNpgsql(Configuration.GetConnectionString("ToolDB")));
             services.AddMvc();
@@ -47,7 +55,7 @@ namespace toolservice
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseCors("CorsPolicy");
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
