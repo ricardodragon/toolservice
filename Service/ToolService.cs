@@ -55,12 +55,49 @@ namespace toolservice.Service
 
         }
 
+        public async Task<List<Tool>> getToolsInUSe()
+        {
+            var tools = await _context.Tools
+                                .Where(x => x.currentThingId != null)
+                                .ToListAsync();
+            foreach (var tool in tools)
+            {
+                var toolType = await _toolTypeService.getToolType(tool.typeId.Value);
+                tool.typeName = toolType.name;
+
+                if (tool.currentThingId != null)
+                {
+                    var (thing, status) = await _thingService.getThing(tool.currentThingId.Value);
+                    if (status == HttpStatusCode.OK)
+                        tool.currentThing = thing;
+                }
+            }
+            return tools;
+        }
+        public async Task<List<Tool>> getToolsOnThing(int thingId)
+        {
+            var tools = await _context.Tools
+                                .Where(x => x.currentThingId == thingId)
+                                .ToListAsync();
+            if (tools == null)
+                return null;
+            var returnList = new List<Tool>();
+            foreach (var tool in tools)
+            {
+
+                returnList.Add(await getTool(tool.id));
+            }
+            return tools;
+        }
+
+
         public async Task<Tool> getTool(int toolId)
         {
             var tool = await _context.Tools
                      .Where(x => x.id == toolId)
                      .FirstOrDefaultAsync();
-
+            if (tool == null)
+                return null;
             var toolType = await _toolTypeService.getToolType(tool.typeId.Value);
             tool.typeName = toolType.name;
 
@@ -71,6 +108,21 @@ namespace toolservice.Service
                     tool.currentThing = thing;
             }
             return tool;
+        }
+        public async Task<Tool> setToolToThing(Tool tool, int thingId)
+        {
+            var toolDB = tool;
+
+            toolDB.currentThingId = thingId;
+
+            if (toolDB == null)
+            {
+                return null;
+            }
+
+            _context.Tools.Update(toolDB);
+            await _context.SaveChangesAsync();
+            return toolDB;
         }
 
         public async Task<Tool> updateTool(int toolId, Tool tool)
@@ -92,19 +144,17 @@ namespace toolservice.Service
             return tool;
         }
 
+
+
         public async Task<Tool> deleteTool(int toolId)
         {
             var toolDb = await getTool(toolId);
-
             if (toolDb == null)
             {
                 return null;
             }
-
             toolDb.status = "inactive";
-
             toolDb = await updateTool(toolId, toolDb);
-
             return toolDb;
         }
 
@@ -118,7 +168,7 @@ namespace toolservice.Service
 
 
         private IQueryable<Tool> ApplyFilter(IQueryable<Tool> queryTool,
-       ToolFieldEnum fieldFilter, string fieldValue)
+            ToolFieldEnum fieldFilter, string fieldValue)
         {
             switch (fieldFilter)
             {
@@ -196,8 +246,6 @@ namespace toolservice.Service
             }
             return queryTags;
         }
-
-
 
 
     }

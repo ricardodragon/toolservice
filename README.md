@@ -116,6 +116,10 @@ this used for CRUD of tool type
   * PUT: Update tool
     * Body: json tool
   * DELETE: inactive tool
+* api/tool/inuse
+  * GET: Return tools that are associtated with a thing.
+* api/tool/thing/{thingid}
+  * GET: Return tools that are associtated with the thing where thingId = thingId.
 
 # GatewayAPI
 
@@ -241,9 +245,9 @@ This API can send the Data to a Endpoint if the configuration in present. The AP
 
 API to read all the transition history of a tool.
 
-## StateConfiguration Data Format
+## StateTransitionHistory Data Format
 
-These are the fields of the StateConfiguration and it's constrains:
+These are the fields of the StateTransitionHistory and it's constrains:
 
 * toolId: Id of the tool of this history
   * Integer
@@ -291,3 +295,12 @@ These are the fields of the StateConfiguration and it's constrains:
     * toolid: Mandatory Id of the searched tool
     * from: Initial date of the search (Default: 00:00 of the current Day)
     * to: End date of the search (Default: 23:59 of the current Day)
+
+# AssociateToolAPI
+
+API used to associate a tool with a thing. When the operation is done the API set the status of the Tool and save the history.
+
+## URLs
+
+* api/tool/AssociateTool/{thingId}{toolid}
+  * GET: Associate the Tool where toolid=toolId to the thing where thingid=thingid IF THIS IS PERMITED.

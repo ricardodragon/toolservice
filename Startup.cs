@@ -45,7 +45,10 @@ namespace toolservice
             services.AddDbContext<ApplicationDbContext>(options =>
                options.UseNpgsql(Configuration.GetConnectionString("ToolDB")));
             services.AddTransient<IStateManagementService, StateManagementService>();
+            services.AddTransient<IStateManagementService, StateManagementService>();
+            services.AddTransient<IAssociateToolService, AssociateToolService>();
             services.AddSingleton<IList<IPostStateChangeAction>>(sp =>
+
                  new List<IPostStateChangeAction>{
 
                     new TriggerAction(Configuration)
