@@ -101,11 +101,13 @@ namespace toolservice.Service
                     tool, justification, curState.state.ToString(), newState.ToString());
                 foreach (var action in _postStateChangeActions)
                 {
-                    Task.Run(() => action.action(tool, client));
+                    action.action(tool, client);
                 }
                 return tool;
             }
             return null;
         }
+
+
     }
 }

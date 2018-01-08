@@ -24,7 +24,7 @@ namespace toolservice.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
             var stateConfiguration = _stateManagementService.getPossibleStatusTransition();
             if (stateConfiguration == null)

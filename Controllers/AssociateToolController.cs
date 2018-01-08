@@ -25,7 +25,7 @@ namespace toolservice.Controllers
             _associateToolService = associateToolService;
         }
 
-        [HttpGet]
+        [HttpPut]
         [Produces("application/json")]
         public async Task<IActionResult> GetGroups([FromQuery]int thingId, [FromQuery]int toolId)
         {

@@ -6,6 +6,6 @@ namespace toolservice.Actions
 {
     public interface IPostStateChangeAction
     {
-        Task action(Tool tool, HttpClient client);
+        void action(Tool tool, HttpClient client);
     }
 }

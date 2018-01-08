@@ -7,6 +7,12 @@ using toolservice.Service.Interface;
 using toolservice.Data;
 using toolservice.Model;
 using System.Net;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace toolservice.Service
 {
@@ -16,16 +22,20 @@ namespace toolservice.Service
         private readonly IToolTypeService _toolTypeService;
         private readonly IStateManagementService _stateManagementService;
         private readonly IThingGroupService _thingGroupService;
+        private readonly IConfiguration _configuration;
+        private readonly HttpClient client = new HttpClient();
 
         public AssociateToolService(IStateManagementService stateManagementService,
             IToolTypeService toolTypeService,
             IToolService toolService,
-            IThingGroupService thingGroupService)
+            IThingGroupService thingGroupService,
+            IConfiguration configuration)
         {
             _toolTypeService = toolTypeService;
             _toolService = toolService;
             _stateManagementService = stateManagementService;
             _thingGroupService = thingGroupService;
+            _configuration = configuration;
         }
         public async Task<(Tool, string)> AssociateTool(int thingId, int toolId)
         {
@@ -47,8 +57,24 @@ namespace toolservice.Service
                 return (null, "This Tool can't  be associated with this thing.");
             await _stateManagementService.setToolToStatusById(toolId, stateEnum.in_use, null);
             await _toolService.setToolToThing(tool, thingId);
+            Trigger(tool);
             tool = await _toolService.getTool(toolId);
             return (tool, "Tool Set to Use");
+        }
+
+        private async void Trigger(Tool tool)
+        {
+            if (_configuration["AssociationPostEndpoint"] != null)
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var content = new StringContent(JsonConvert.SerializeObject(tool), Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PostAsync(_configuration["AssociationPostEndpoint"], content);
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Data posted on AssociationPostEndpoint");
+                }
+            }
         }
     }
 }

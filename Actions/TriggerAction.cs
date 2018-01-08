@@ -18,7 +18,7 @@ namespace toolservice.Actions
             _configuration = configuration;
         }
 
-        public async Task action(Tool tool, HttpClient client)
+        public async void action(Tool tool, HttpClient client)
         {
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

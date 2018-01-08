@@ -235,11 +235,11 @@ API to Manage the current state of a tool on Lorien. Used to update the status o
 {
   "text": "teste"
 }
+```
 
 ## After Status Change Post
 
-This API can send the Data to a Endpoint if the configuration in present. The API will send a production order JSON to the configured endpoint.
-```
+This API can send the Data to a Endpoint if the configuration in present. The API will send a tool JSON to the configured endpoint.
 
 # StateTransitionHistoryAPI
 
@@ -306,4 +306,8 @@ API used to associate a tool with a thing. When the operation is done the API se
 ## URLs
 
 * api/tool/AssociateTool/{thingId}{toolid}
-  * GET: Associate the Tool where toolid=toolId to the thing where thingid=thingid IF THIS IS PERMITED.
+  * Put: Associate the Tool where toolid=toolId to the thing where thingid=thingid IF THIS IS PERMITED.
+
+## After Association Post
+
+This API can send the Data to a Endpoint if the configuration in present. The API will send a tool JSON to the configured endpoint.
