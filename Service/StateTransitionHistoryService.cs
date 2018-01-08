@@ -21,8 +21,8 @@ namespace toolservice.Service
             _toolService = toolService;
         }
 
-        public async Task addToolHistory(int toolid, bool justificationNeeded, Tool tool,
-         Justification justification, string previousState, string nextState)
+        public async Task addToolHistory(int toolid, bool justificationNeeded, double previoustLife,
+         Tool tool, Justification justification, string previousState, string nextState)
         {
             StateTransitionHistory stateTransitionHistory = new StateTransitionHistory();
             stateTransitionHistory.justification = justification;
@@ -32,6 +32,7 @@ namespace toolservice.Service
             stateTransitionHistory.previousState = previousState;
             stateTransitionHistory.nextState = nextState;
             stateTransitionHistory.timeStampTicks = DateTime.Now.Ticks;
+            stateTransitionHistory.previoustLife = previoustLife;
             _context.StateTransitionHistories.Add(stateTransitionHistory);
             await _context.SaveChangesAsync();
         }

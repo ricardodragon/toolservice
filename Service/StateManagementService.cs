@@ -97,7 +97,7 @@ namespace toolservice.Service
                 tool.status = newState.ToString();
                 _context.Entry(tool).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
-                await _stateTransitionHistoryService.addToolHistory(tool.id, newStateObject.needsJustification,
+                await _stateTransitionHistoryService.addToolHistory(tool.id, newStateObject.needsJustification, tool.currentLife,
                     tool, justification, curState.state.ToString(), newState.ToString());
                 foreach (var action in _postStateChangeActions)
                 {

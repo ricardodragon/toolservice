@@ -261,6 +261,8 @@ These are the fields of the StateTransitionHistory and it's constrains:
   * String
 * timeStampTicks: Date of the transition in Ticks
   * Long
+* previoustLife: Life span of the tool at the time of transition
+  * Double
 * tool: Tool of the history
   * Tool Json
 
@@ -284,6 +286,7 @@ These are the fields of the StateTransitionHistory and it's constrains:
   "justification": null,
   "previousState": "available",
   "nextState": "in_maintenance",
+  "previoustLife": 50005,
   "timeStampTicks": 636506700576991715
 }
 ```
