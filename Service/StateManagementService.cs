@@ -88,10 +88,14 @@ namespace toolservice.Service
             var newStateObject = _stateConfiguration.states
                        .Where(x => x.state == newState.ToString()).FirstOrDefault();
             if (newStateObject.needsJustification)
+            {
                 if (justification == null)
                     return null;
                 else if (String.IsNullOrEmpty(justification.text))
                     return null;
+            }
+            else
+                justification = null;
             if (curState.possibleNextStates.Contains(newState.ToString()))
             {
                 tool.status = newState.ToString();
