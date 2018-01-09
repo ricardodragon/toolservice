@@ -54,6 +54,25 @@ namespace toolservice.Service
             return (tools, totalCount);
 
         }
+        public async Task<List<Tool>> getToolsAvailable()
+        {
+            var tools = await _context.Tools
+                                .Where(x => x.currentThingId == null && x.status == stateEnum.available.ToString())
+                                .ToListAsync();
+            foreach (var tool in tools)
+            {
+                var toolType = await _toolTypeService.getToolType(tool.typeId.Value);
+                tool.typeName = toolType.name;
+
+                if (tool.currentThingId != null)
+                {
+                    var (thing, status) = await _thingService.getThing(tool.currentThingId.Value);
+                    if (status == HttpStatusCode.OK)
+                        tool.currentThing = thing;
+                }
+            }
+            return tools;
+        }
 
         public async Task<List<Tool>> getToolsInUSe()
         {
@@ -109,7 +128,7 @@ namespace toolservice.Service
             }
             return tool;
         }
-        public async Task<Tool> setToolToThing(Tool tool, int thingId)
+        public async Task<Tool> setToolToThing(Tool tool, int? thingId)
         {
             var toolDB = tool;
 

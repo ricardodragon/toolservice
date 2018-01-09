@@ -9,7 +9,8 @@ namespace toolservice.Service.Interface
         Task<(List<Tool>, int)> getTools(int startat, int quantity, ToolFieldEnum fieldFilter, string fieldValue, ToolFieldEnum orderField, OrderEnum order);
         Task<List<Tool>> getToolsInUSe();
         Task<List<Tool>> getToolsOnThing(int thingId);
-        Task<Tool> setToolToThing(Tool tool, int thingId);
+        Task<List<Tool>> getToolsAvailable();
+        Task<Tool> setToolToThing(Tool tool, int? thingId);
         Task<Tool> getTool(int toolId);
         Task<Tool> updateTool(int toolId, Tool tool);
         Task<Tool> deleteTool(int toolId);

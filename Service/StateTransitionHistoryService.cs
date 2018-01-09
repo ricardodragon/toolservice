@@ -40,7 +40,9 @@ namespace toolservice.Service
         public async Task<IList<StateTransitionHistory>> getToolHistory(int toolid, long from, long to)
         {
             var histories = await _context.StateTransitionHistories
-                .Where(x => x.toolId == toolid && x.timeStampTicks >= from && x.timeStampTicks <= to).ToListAsync();
+                .Where(x => x.toolId == toolid && x.timeStampTicks >= from && x.timeStampTicks <= to)
+                .Include(x => x.justification)
+                .ToListAsync();
             foreach (var item in histories)
             {
                 item.tool = await _toolService.getTool(item.toolId);

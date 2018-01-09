@@ -305,8 +305,11 @@ API used to associate a tool with a thing. When the operation is done the API se
 
 ## URLs
 
-* api/tool/AssociateTool/{thingId}{toolid}
+* api/tool/AssociateTool/associate/{thingId}{toolid}
   * Put: Associate the Tool where toolid=toolId to the thing where thingid=thingid IF THIS IS PERMITED.
+* api/tool/AssociateTool/disassociate/
+  * Put: Associate the Tool where toolid=toolId to the thing where thingid=thingid IF THIS IS PERMITED.
+    * Body: Tool JSON (Current Life MUST BE LESSER OR EQUAL THAN CURRENT LIFE)
 
 ## After Association Post
 

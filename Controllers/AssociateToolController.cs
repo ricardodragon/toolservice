@@ -25,9 +25,9 @@ namespace toolservice.Controllers
             _associateToolService = associateToolService;
         }
 
-        [HttpPut]
+        [HttpPut("associate/")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetGroups([FromQuery]int thingId, [FromQuery]int toolId)
+        public async Task<IActionResult> Associate([FromQuery]int thingId, [FromQuery]int toolId)
         {
 
             var (tool, result) = await _associateToolService.AssociateTool(thingId, toolId);
@@ -37,5 +37,18 @@ namespace toolservice.Controllers
         }
 
 
+        [HttpPut("disassociate/")]
+        [Produces("application/json")]
+        public async Task<IActionResult> Disassociate([FromBody]Tool tool)
+        {
+            if (ModelState.IsValid)
+            {
+                var (returnTool, result) = await _associateToolService.DisassociateTool(tool);
+                if (returnTool == null)
+                    return BadRequest(result);
+                return Ok(tool);
+            }
+            return BadRequest(ModelState);
+        }
     }
 }
