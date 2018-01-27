@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,8 +52,13 @@ namespace toolservice {
 
                 }
             );
-
-            services.AddMvc ().AddJsonOptions (options => {
+            services.AddResponseCaching ();
+            services.AddMvc ((options) => {
+                options.CacheProfiles.Add ("toolcache", new CacheProfile () {
+                    Duration = Convert.ToInt32 (Configuration["CacheDuration"]),
+                        Location = ResponseCacheLocation.Any
+                });
+            }).AddJsonOptions (options => {
                 options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
             });;
         }
