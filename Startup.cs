@@ -38,6 +38,7 @@ namespace toolservice {
             services.AddSingleton<IThingGroupService, ThingGroupService> ();
             services.AddTransient<IToolTypeService, ToolTypeService> ();
             services.AddTransient<IToolService, ToolService> ();
+            services.AddTransient<IToolInformationService, ToolInformationService>();
             services.AddTransient<IStateTransitionHistoryService, StateTransitionHistoryService> ();
             services.AddDbContext<ApplicationDbContext> (options =>
                 options.UseNpgsql (Configuration.GetConnectionString ("ToolDB")));

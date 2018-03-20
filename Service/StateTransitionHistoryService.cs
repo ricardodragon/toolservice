@@ -27,7 +27,7 @@ namespace toolservice.Service
             StateTransitionHistory stateTransitionHistory = new StateTransitionHistory();
             stateTransitionHistory.justification = justification;
             stateTransitionHistory.justificationNeeded = justificationNeeded;
-            stateTransitionHistory.toolId = tool.id;
+            stateTransitionHistory.toolId = tool.toolId;
             stateTransitionHistory.justification = justification;
             stateTransitionHistory.previousState = previousState;
             stateTransitionHistory.nextState = nextState;

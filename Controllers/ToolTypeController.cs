@@ -55,10 +55,10 @@ namespace toolservice.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    toolType.id = 0;
+                    toolType.toolTypeId = 0;
 
                     toolType = await _toolTypeService.addToolType(toolType);
-                    return Created($"api/Extract/{toolType.id}", toolType);
+                    return Created($"api/Extract/{toolType.toolTypeId}", toolType);
                 }
                 return BadRequest(ModelState);
             }

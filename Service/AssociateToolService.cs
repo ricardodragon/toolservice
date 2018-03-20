@@ -43,7 +43,7 @@ namespace toolservice.Service
             if (tool == null)
                 return (null, "Tool Not Found");
             var availableTools = await _toolService.getToolsAvailable();
-            if (availableTools.Select(x => x.id).Contains(toolId))
+            if (availableTools.Where(x=>x.toolId == toolId).Count()<1)
                 return (null, "Tool Not Available");
             var toolType = await _toolTypeService.getToolType(tool.typeId.Value);
             if (toolType == null)
@@ -67,17 +67,17 @@ namespace toolservice.Service
 
         public async Task<(Tool, string)> DisassociateTool(Tool tool)
         {
-            var toolDb = await _toolService.getTool(tool.id);
+            var toolDb = await _toolService.getTool(tool.toolId);
             if (tool == null)
                 return (null, "Tool Not Found");
             if (toolDb.status != stateEnum.in_use.ToString())
                 return (null, "Tool Not In Use");
             if (toolDb.currentLife > tool.currentLife)
                 return (null, "Current Life can be greater than the previou Life");
-            await _stateManagementService.setToolToStatusById(tool.id, stateEnum.available, null);
+            await _stateManagementService.setToolToStatusById(tool.toolId, stateEnum.available, null);
             await _toolService.setToolToThing(toolDb, null);
             Trigger(tool);
-            var newtool = await _toolService.getTool(tool.id);
+            var newtool = await _toolService.getTool(tool.toolId);
             return (newtool, "Tool Set to Available");
 
         }

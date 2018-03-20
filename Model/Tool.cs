@@ -7,7 +7,7 @@ namespace toolservice.Model
 {
     public class Tool
     {
-        public int id { get; set; }
+        public int toolId { get; set; }
         [MaxLength(50)]
         public string name { get; set; }
         [MaxLength(100)]
@@ -16,6 +16,8 @@ namespace toolservice.Model
         public string serialNumber { get; set; }
         [MaxLength(100)]
         public string code { get; set; }
+        [MaxLength(100)]
+        public string codeClient { get; set; }
         [Required]
         public double lifeCycle { get; set; }
         public double currentLife { get; set; }
@@ -31,6 +33,7 @@ namespace toolservice.Model
         public int? currentThingId { get; set; }
         [NotMapped]
         public Thing currentThing { get; set; }
+        public List<ToolInformation> informations{get;set;}
 
     }
 }

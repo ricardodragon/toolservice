@@ -60,10 +60,13 @@ namespace toolservice.Migrations
 
             modelBuilder.Entity("toolservice.Model.Tool", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("toolId")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("code")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("codeClient")
                         .HasMaxLength(100);
 
                     b.Property<double>("currentLife");
@@ -92,16 +95,50 @@ namespace toolservice.Migrations
                     b.Property<string>("unitOfMeasurement")
                         .IsRequired();
 
-                    b.HasKey("id");
+                    b.HasKey("toolId");
 
                     b.HasIndex("serialNumber");
 
                     b.ToTable("Tools");
                 });
 
+            modelBuilder.Entity("toolservice.Model.ToolInformation", b =>
+                {
+                    b.Property<int>("toolInformationId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("datetime");
+
+                    b.Property<int?>("toolId");
+
+                    b.HasKey("toolInformationId");
+
+                    b.HasIndex("toolId");
+
+                    b.ToTable("ToolInformations");
+                });
+
+            modelBuilder.Entity("toolservice.Model.ToolInformationAdditional", b =>
+                {
+                    b.Property<int>("toolInformationAdditionalId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("key");
+
+                    b.Property<int?>("toolInformationId");
+
+                    b.Property<string>("value");
+
+                    b.HasKey("toolInformationAdditionalId");
+
+                    b.HasIndex("toolInformationId");
+
+                    b.ToTable("ToolInformationAdditional");
+                });
+
             modelBuilder.Entity("toolservice.Model.ToolType", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("toolTypeId")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("description")
@@ -118,7 +155,7 @@ namespace toolservice.Migrations
                         .HasColumnName("thingGroupIds")
                         .HasColumnType("integer[]");
 
-                    b.HasKey("id");
+                    b.HasKey("toolTypeId");
 
                     b.ToTable("ToolTypes");
                 });
@@ -128,6 +165,20 @@ namespace toolservice.Migrations
                     b.HasOne("toolservice.Model.Justification", "justification")
                         .WithMany()
                         .HasForeignKey("justificationId");
+                });
+
+            modelBuilder.Entity("toolservice.Model.ToolInformation", b =>
+                {
+                    b.HasOne("toolservice.Model.Tool")
+                        .WithMany("informations")
+                        .HasForeignKey("toolId");
+                });
+
+            modelBuilder.Entity("toolservice.Model.ToolInformationAdditional", b =>
+                {
+                    b.HasOne("toolservice.Model.ToolInformation")
+                        .WithMany("informationAdditional")
+                        .HasForeignKey("toolInformationId");
                 });
 #pragma warning restore 612, 618
         }

@@ -30,15 +30,15 @@ namespace toolservice.Service
         public async Task<(List<Tool>, int)> getTools(int startat, int quantity, ToolFieldEnum fieldFilter,
         string fieldValue, ToolFieldEnum orderField, OrderEnum order)
         {
-            var queryTool = _context.Tools.Where(x => x.id > 0);
+            var queryTool = _context.Tools.Where(x => x.toolId > 0);
             queryTool = ApplyFilter(queryTool, fieldFilter, fieldValue);
             queryTool = ApplyOrder(queryTool, orderField, order);
             var toolId = await queryTool
             .Skip(startat).Take(quantity)
-            .Select(x => x.id)
+            .Select(x => x.toolId)
             .ToListAsync();
 
-            var queryToolCount = _context.Tools.Where(x => x.id > 0);
+            var queryToolCount = _context.Tools.Where(x => x.toolId > 0);
             queryToolCount = ApplyFilter(queryToolCount, fieldFilter, fieldValue);
             queryToolCount = ApplyOrder(queryToolCount, orderField, order);
             var totalCount = await queryToolCount.CountAsync();
@@ -104,7 +104,7 @@ namespace toolservice.Service
             foreach (var tool in tools)
             {
 
-                returnList.Add(await getTool(tool.id));
+                returnList.Add(await getTool(tool.toolId));
             }
             return tools;
         }
@@ -113,7 +113,9 @@ namespace toolservice.Service
         public async Task<Tool> getTool(int toolId)
         {
             var tool = await _context.Tools
-                     .Where(x => x.id == toolId)
+                     .Where(x => x.toolId == toolId)
+                     .Include("informations")
+                     .Include("informations.informationAdditional")
                      .FirstOrDefaultAsync();
             if (tool == null)
                 return null;
@@ -147,13 +149,13 @@ namespace toolservice.Service
         public async Task<Tool> updateTool(int toolId, Tool tool)
         {
             var toolDB = await _context.Tools
-                     .Where(x => x.id == toolId)
+                     .Where(x => x.toolId == toolId)
                      .AsNoTracking()
                      .FirstOrDefaultAsync();
 
             tool.currentThingId = toolDB.currentThingId;
 
-            if (toolId != toolDB.id && toolDB == null)
+            if (toolId != toolDB.toolId && toolDB == null)
             {
                 return null;
             }
@@ -260,7 +262,7 @@ namespace toolservice.Service
                         queryTags = queryTags.OrderByDescending(x => x.typeName);
                     break;
                 default:
-                    queryTags = queryTags.OrderBy(x => x.id);
+                    queryTags = queryTags.OrderBy(x => x.toolId);
                     break;
             }
             return queryTags;

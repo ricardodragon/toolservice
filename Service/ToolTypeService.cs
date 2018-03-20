@@ -34,9 +34,9 @@ namespace toolservice.Service
         public async Task<List<ToolType>> getToolTypes(int startat, int quantity)
         {
             var toolTypeId = await _context.ToolTypes
-                     .OrderBy(x => x.id)
+                     .OrderBy(x => x.toolTypeId)
                      .Skip(startat).Take(quantity)
-                     .Select(x => x.id)
+                     .Select(x => x.toolTypeId)
                      .ToListAsync();
             List<ToolType> toolTypes = new List<ToolType>();
             foreach (var item in toolTypeId)
@@ -54,7 +54,7 @@ namespace toolservice.Service
         public async Task<ToolType> getToolType(int toolTypeId)
         {
             var toolType = await _context.ToolTypes
-                     .Where(x => x.id == toolTypeId)
+                     .Where(x => x.toolTypeId == toolTypeId)
                      .FirstOrDefaultAsync();
 
             if (toolType.thingGroupIds != null && toolType.thingGroupIds.Length != 0)
@@ -69,12 +69,12 @@ namespace toolservice.Service
         public async Task<ToolType> updateToolType(int toolTypeId, ToolType toolType)
         {
             var tooltypeDB = await _context.ToolTypes
-                     .Where(x => x.id == toolTypeId)
+                     .Where(x => x.toolTypeId == toolTypeId)
                      .AsNoTracking()
                      .FirstOrDefaultAsync();
 
 
-            if (toolTypeId != tooltypeDB.id && tooltypeDB == null)
+            if (toolTypeId != tooltypeDB.toolTypeId && tooltypeDB == null)
             {
                 return null;
             }

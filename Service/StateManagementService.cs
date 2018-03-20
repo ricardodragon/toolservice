@@ -56,7 +56,7 @@ namespace toolservice.Service
         public async Task<Tool> setToolToStatusById(int toolId, stateEnum newState, Justification justification)
         {
             var tool = await _context.Tools
-                                   .Where(x => x.id == toolId)
+                                   .Where(x => x.toolId == toolId)
                                    .FirstOrDefaultAsync();
             if (tool == null)
                 return null;
@@ -101,7 +101,7 @@ namespace toolservice.Service
                 tool.status = newState.ToString();
                 _context.Entry(tool).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
-                await _stateTransitionHistoryService.addToolHistory(tool.id, newStateObject.needsJustification, tool.currentLife,
+                await _stateTransitionHistoryService.addToolHistory(tool.toolId, newStateObject.needsJustification, tool.currentLife,
                     tool, justification, curState.state.ToString(), newState.ToString());
                 foreach (var action in _postStateChangeActions)
                 {
