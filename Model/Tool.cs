@@ -20,6 +20,7 @@ namespace toolservice.Model
         public string codeClient { get; set; }
         [Required]
         public double lifeCycle { get; set; }
+        public int? position{ get; set; }
         public double currentLife { get; set; }
         [Required]
         public string unitOfMeasurement { get; set; }

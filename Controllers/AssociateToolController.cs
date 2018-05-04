@@ -27,10 +27,16 @@ namespace toolservice.Controllers
 
         [HttpPut("associate/")]
         [Produces("application/json")]
-        public async Task<IActionResult> Associate([FromQuery]int thingId, [FromQuery]int toolId)
+        public async Task<IActionResult> Associate([FromQuery]int thingId,
+                [FromQuery]int toolId,[FromQuery] int? position)
         {
+            Tool tool;
+            string result;
+            if(position == null)
+                (tool, result) = await _associateToolService.AssociateWithoutPosition(thingId, toolId);
+            else
+                (tool, result) = await _associateToolService.AssociateWithPosition(thingId, toolId, position);
 
-            var (tool, result) = await _associateToolService.AssociateTool(thingId, toolId);
             if (tool == null)
                 return BadRequest(result);
             return Ok(tool);
@@ -43,10 +49,10 @@ namespace toolservice.Controllers
         {
             if (ModelState.IsValid)
             {
-                var (returnTool, result) = await _associateToolService.DisassociateTool(tool);
+                var(returnTool, result) = await _associateToolService.DisassociateTool(tool);
                 if (returnTool == null)
                     return BadRequest(result);
-                return Ok(tool);
+                return Ok(returnTool);
             }
             return BadRequest(ModelState);
         }

@@ -145,7 +145,19 @@ namespace toolservice.Service
             await _context.SaveChangesAsync();
             return toolDB;
         }
+        public async Task<Tool> setToolToPosition(Tool tool, int? position)
+        { 
+            var toolDB = tool;
 
+            toolDB.position = position;
+            if(toolDB == null)
+            {
+                return null;
+            }
+            _context.Tools.Update(toolDB);
+            await _context.SaveChangesAsync();
+            return toolDB;
+        }
         public async Task<Tool> updateTool(int toolId, Tool tool)
         {
             var toolDB = await _context.Tools
@@ -155,17 +167,17 @@ namespace toolservice.Service
 
             tool.currentThingId = toolDB.currentThingId;
 
-            if (toolId != toolDB.toolId && toolDB == null)
+            if (toolId != toolDB.toolId && toolDB == null || tool.position == null)
             {
                 return null;
             }
 
+            tool.position = toolDB.position;
+            tool.status = toolDB.status;
             _context.Tools.Update(tool);
             await _context.SaveChangesAsync();
             return tool;
         }
-
-
 
         public async Task<Tool> deleteTool(int toolId)
         {
@@ -182,6 +194,7 @@ namespace toolservice.Service
         public async Task<Tool> addTool(Tool tool)
         {
             tool.currentThingId = null;
+            tool.position = null;
             _context.Tools.Add(tool);
             await _context.SaveChangesAsync();
             return tool;
