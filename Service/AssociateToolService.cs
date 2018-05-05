@@ -65,7 +65,7 @@ namespace toolservice.Service {
             var toolsInUse = await _toolService.getToolsInUSe();
             foreach(var otherTool in toolsInUse)
             {
-                if(tool.position == otherTool.position
+                if(position == otherTool.position
                     && otherTool.currentThingId == thingId)
                     {
                         return(null, "There is already a tool of the same type and position");

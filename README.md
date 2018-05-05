@@ -65,6 +65,8 @@ this used for CRUD of tool type
 * unitOfMeasurement: unit of measurement of life
   * String
   * Required
+* position: position of the tool
+  * Nullable Integer
 * typeId: id of tool type
   * Integer
   * Required
@@ -87,6 +89,7 @@ this used for CRUD of tool type
   "code": null,
   "lifeCycle": 100,
   "currentLife": 0,
+  "position": null,
   "unitOfMeasurement": "minute",
   "typeId": 1,
   "typeName": "Tipo",
@@ -301,12 +304,12 @@ These are the fields of the StateTransitionHistory and it's constrains:
 
 # AssociateToolAPI
 
-API used to associate a tool with a thing. When the operation is done the API set the status of the Tool and save the history.
+API used to associate a tool with a thing in a certain position. When the operation is done the API set the status of the Tool and save the history.
 
 ## URLs
 
-* api/tool/AssociateTool/associate/{thingId}{toolid}
-  * Put: Associate the Tool where toolid=toolId to the thing where thingid=thingid IF THIS IS PERMITED.
+* api/tool/AssociateTool/associate/{thingId}{toolid}{position}
+  * Put: Associate the Tool where toolid=toolId to the thing where thingid=thingid in the position where position=position IF THIS IS PERMITED.
 * api/tool/AssociateTool/disassociate/
   * Put: Associate the Tool where toolid=toolId to the thing where thingid=thingid IF THIS IS PERMITED.
     * Body: Tool JSON (Current Life MUST BE LESSER OR EQUAL THAN CURRENT LIFE)
