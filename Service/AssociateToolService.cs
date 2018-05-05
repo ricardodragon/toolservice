@@ -57,7 +57,6 @@ namespace toolservice.Service {
                 return (null, "This Tool can't  be associated with this thing.");
             }
 
-            tool = await _toolService.getTool (toolId);
             return (tool, "Tool Set to Use");
         }        
         public async Task<(Tool, string)> AssociateTool (int thingId, int toolId, int? position){
@@ -91,7 +90,7 @@ namespace toolservice.Service {
 
         public async Task<(Tool, string)> AssociateWithPosition(int thingId, int toolId, int? position)
         {
-            var tool = await _toolService.getTool(toolId);
+            Tool tool;
             string result;
 
             (tool,result) = await AssociateTool(thingId, toolId);
@@ -125,6 +124,7 @@ namespace toolservice.Service {
             await _toolService.setToolToThing (toolDb, null);
             await _toolService.setToolToPosition(toolDb, null);
             var newtool = await _toolService.getTool (tool.toolId);
+            newtool.currentThing = null;
             Trigger (newtool);
             return (newtool, "Tool Set to Available");
         }
