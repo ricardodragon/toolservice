@@ -167,7 +167,7 @@ namespace toolservice.Service
 
             tool.currentThingId = toolDB.currentThingId;
 
-            if (toolId != toolDB.toolId && toolDB == null || tool.position == null)
+            if (toolId != toolDB.toolId && toolDB == null)
             {
                 return null;
             }
