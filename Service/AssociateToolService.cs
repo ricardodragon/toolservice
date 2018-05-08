@@ -76,9 +76,10 @@ namespace toolservice.Service {
             (tool, result) = await AssociateTool (thingId, toolId);
             if (tool == null)
                 return (null, result);
-            await _stateManagementService.setToolToStatusById (toolId, stateEnum.in_use, null);
-            await _toolService.setToolToThing (tool, thingId);
-            tool = await _toolService.getTool (toolId);
+            tool = await _stateManagementService.setToolToStatusById (toolId, stateEnum.in_use, null);
+            tool = await _toolService.setToolToThing (tool, thingId);
+            tool = await _toolService.getTool (tool.toolId);
+
             Trigger (tool);
             return (tool, result);
         }
@@ -97,10 +98,11 @@ namespace toolservice.Service {
                 return (null, result);
             }
 
-            await _stateManagementService.setToolToStatusById (toolId, stateEnum.in_use, null);
-            await _toolService.setToolToThing (tool, thingId);
-            await _toolService.setToolToPosition (tool, position);
-            tool = await _toolService.getTool (toolId);
+            tool = await _stateManagementService.setToolToStatusById (toolId, stateEnum.in_use, null);
+            tool = await _toolService.setToolToThing (tool, thingId);
+            tool = await _toolService.setToolToPosition (tool, position);
+            tool = await _toolService.getTool (tool.toolId);
+
             Trigger (tool);
             return (tool, result);
         }
@@ -112,13 +114,12 @@ namespace toolservice.Service {
                 return (null, "Tool Not In Use");
             if (toolDb.currentLife > tool.currentLife)
                 return (null, "Current Life can be greater than the previou Life");
-            await _stateManagementService.setToolToStatusById (tool.toolId, stateEnum.available, null);
-            await _toolService.setToolToThing (toolDb, null);
-            await _toolService.setToolToPosition (toolDb, null);
-            var newtool = await _toolService.getTool (tool.toolId);
-            newtool.currentThing = null;
-            Trigger (newtool);
-            return (newtool, "Tool Set to Available");
+            toolDb = await _stateManagementService.setToolToStatusById (tool.toolId, stateEnum.available, null);
+            toolDb = await _toolService.setToolToThing (toolDb, null);
+            toolDb = await _toolService.setToolToPosition (toolDb, null);
+            toolDb.currentThing = null;
+            Trigger (toolDb);
+            return (toolDb, "Tool Set to Available");
         }
 
         private async void Trigger (Tool tool) {
@@ -128,8 +129,11 @@ namespace toolservice.Service {
                     client.DefaultRequestHeaders.Accept.Add (new MediaTypeWithQualityHeaderValue ("application/json"));
                     var content = new StringContent (JsonConvert.SerializeObject (tool), Encoding.UTF8, "application/json");
                     HttpResponseMessage response = await client.PostAsync (_configuration["AssociationPostEndpoint"], content);
+                    Console.WriteLine (JsonConvert.SerializeObject (tool));
                     if (response.IsSuccessStatusCode) {
                         Console.WriteLine ("Data posted on AssociationPostEndpoint");
+                    } else {
+                        Console.WriteLine (response.StatusCode);
                         Console.WriteLine (await response.Content.ReadAsStringAsync ());
                     }
                 }
