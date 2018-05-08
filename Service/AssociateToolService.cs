@@ -46,71 +46,63 @@ namespace toolservice.Service {
                 return (null, "Tool Type Not Found");
             var thingGroups = toolType.thingGroups;
             bool contains = false;
-            foreach (var group in thingGroups) 
-            {
+            foreach (var group in thingGroups) {
                 var (completeGroup, status) = await _thingGroupService.getGroup (group.thingGroupId);
                 if (status == HttpStatusCode.OK)
                     contains = completeGroup.things.Select (x => x.thingId).Contains (thingId);
             }
-            if (!contains)
-            {
+            if (!contains) {
                 return (null, "This Tool can't  be associated with this thing.");
             }
 
             return (tool, "Tool Set to Use");
-        }        
-        public async Task<(Tool, string)> AssociateTool (int thingId, int toolId, int? position){
-            var tool = await _toolService.getTool(toolId);
-            var toolsInUse = await _toolService.getToolsInUSe();
-            foreach(var otherTool in toolsInUse)
-            {
-                if(position == otherTool.position
-                    && otherTool.currentThingId == thingId)
-                    {
-                        return(null, "There is already a tool of the same type and position");
-                    }
+        }
+        public async Task<(Tool, string)> AssociateTool (int thingId, int toolId, int? position) {
+            var tool = await _toolService.getTool (toolId);
+            var toolsInUse = await _toolService.getToolsInUSe ();
+            foreach (var otherTool in toolsInUse) {
+                if (position == otherTool.position &&
+                    otherTool.currentThingId == thingId) {
+                    return (null, "There is already a tool of the same type and position");
+                }
             }
             tool = await _toolService.getTool (toolId);
-            return (tool,"Tool Set to Use");
+            return (tool, "Tool Set to Use");
         }
 
-        public async Task<(Tool, string)> AssociateWithoutPosition(int thingId, int toolId)
-        {
-            var tool = await _toolService.getTool(toolId);
+        public async Task<(Tool, string)> AssociateWithoutPosition (int thingId, int toolId) {
+            var tool = await _toolService.getTool (toolId);
             string result;
-            (tool,result) = await AssociateTool(thingId, toolId);
-            if(tool==null)
-                return(null, result);
+            (tool, result) = await AssociateTool (thingId, toolId);
+            if (tool == null)
+                return (null, result);
             await _stateManagementService.setToolToStatusById (toolId, stateEnum.in_use, null);
             await _toolService.setToolToThing (tool, thingId);
             tool = await _toolService.getTool (toolId);
             Trigger (tool);
             return (tool, result);
-        }                
+        }
 
-        public async Task<(Tool, string)> AssociateWithPosition(int thingId, int toolId, int? position)
-        {
+        public async Task<(Tool, string)> AssociateWithPosition (int thingId, int toolId, int? position) {
             Tool tool;
             string result;
 
-            (tool,result) = await AssociateTool(thingId, toolId);
-            if(tool==null)
-            {
-                return(null, result);
+            (tool, result) = await AssociateTool (thingId, toolId);
+            if (tool == null) {
+                return (null, result);
             }
 
-            (tool,result) = await AssociateTool(thingId, toolId, position);
-            if(tool==null)
-            {
+            (tool, result) = await AssociateTool (thingId, toolId, position);
+            if (tool == null) {
                 return (null, result);
             }
 
             await _stateManagementService.setToolToStatusById (toolId, stateEnum.in_use, null);
             await _toolService.setToolToThing (tool, thingId);
-            await _toolService.setToolToPosition(tool, position);
+            await _toolService.setToolToPosition (tool, position);
             tool = await _toolService.getTool (toolId);
             Trigger (tool);
-            return (tool,result);
+            return (tool, result);
         }
         public async Task<(Tool, string)> DisassociateTool (Tool tool) {
             var toolDb = await _toolService.getTool (tool.toolId);
@@ -122,7 +114,7 @@ namespace toolservice.Service {
                 return (null, "Current Life can be greater than the previou Life");
             await _stateManagementService.setToolToStatusById (tool.toolId, stateEnum.available, null);
             await _toolService.setToolToThing (toolDb, null);
-            await _toolService.setToolToPosition(toolDb, null);
+            await _toolService.setToolToPosition (toolDb, null);
             var newtool = await _toolService.getTool (tool.toolId);
             newtool.currentThing = null;
             Trigger (newtool);
@@ -130,15 +122,20 @@ namespace toolservice.Service {
         }
 
         private async void Trigger (Tool tool) {
-            if (_configuration["AssociationPostEndpoint"] != null) {
-                client.DefaultRequestHeaders.Accept.Clear ();
-                client.DefaultRequestHeaders.Accept.Add (new MediaTypeWithQualityHeaderValue ("application/json"));
-                var content = new StringContent (JsonConvert.SerializeObject (tool), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PostAsync (_configuration["AssociationPostEndpoint"], content);
-                if (response.IsSuccessStatusCode) {
-                    Console.WriteLine ("Data posted on AssociationPostEndpoint");
-                    Console.WriteLine(await response.Content.ReadAsStringAsync());
+            try {
+                if (_configuration["AssociationPostEndpoint"] != null) {
+                    client.DefaultRequestHeaders.Accept.Clear ();
+                    client.DefaultRequestHeaders.Accept.Add (new MediaTypeWithQualityHeaderValue ("application/json"));
+                    var content = new StringContent (JsonConvert.SerializeObject (tool), Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.PostAsync (_configuration["AssociationPostEndpoint"], content);
+                    if (response.IsSuccessStatusCode) {
+                        Console.WriteLine ("Data posted on AssociationPostEndpoint");
+                        Console.WriteLine (await response.Content.ReadAsStringAsync ());
+                    }
                 }
+            } catch (Exception ex) {
+                Console.WriteLine ("Error on AssociationPostEndpoint");
+                Console.WriteLine (ex.ToString ());
             }
         }
     }

@@ -12,7 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using toolservice.Actions;
 using toolservice.Data;
 using toolservice.Service;
 using toolservice.Service.Interface;
@@ -38,21 +37,13 @@ namespace toolservice {
             services.AddSingleton<IThingGroupService, ThingGroupService> ();
             services.AddTransient<IToolTypeService, ToolTypeService> ();
             services.AddTransient<IToolService, ToolService> ();
-            services.AddTransient<IToolInformationService, ToolInformationService>();
+            services.AddTransient<IToolInformationService, ToolInformationService> ();
             services.AddTransient<IStateTransitionHistoryService, StateTransitionHistoryService> ();
             services.AddDbContext<ApplicationDbContext> (options =>
                 options.UseNpgsql (Configuration.GetConnectionString ("ToolDB")));
             services.AddTransient<IStateManagementService, StateManagementService> ();
             services.AddTransient<IStateManagementService, StateManagementService> ();
             services.AddTransient<IAssociateToolService, AssociateToolService> ();
-            services.AddSingleton<IList<IPostStateChangeAction>> (sp =>
-
-                new List<IPostStateChangeAction> {
-
-                    new TriggerAction (Configuration)
-
-                }
-            );
             services.AddResponseCaching ();
             services.AddMvc ((options) => {
                 options.CacheProfiles.Add ("toolcache", new CacheProfile () {
