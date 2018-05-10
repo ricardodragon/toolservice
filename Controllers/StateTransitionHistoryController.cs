@@ -13,31 +13,24 @@ using Newtonsoft.Json;
 using toolservice.Model;
 using toolservice.Service.Interface;
 
-
-namespace toolservice.Controllers
-{
-    [Route("api/tool/[controller]")]
-    public class StateTransitionHistoryController : Controller
-    {
+namespace toolservice.Controllers {
+    [Route ("api/tool/[controller]")]
+    public class StateTransitionHistoryController : Controller {
         private readonly IStateTransitionHistoryService _stateTransitionHistoryService;
-        public StateTransitionHistoryController(IStateTransitionHistoryService stateTransitionHistoryService)
-        {
+        public StateTransitionHistoryController (IStateTransitionHistoryService stateTransitionHistoryService) {
             _stateTransitionHistoryService = stateTransitionHistoryService;
         }
 
-        [HttpGet("{toolid}")]
-        public async Task<IActionResult> GetId(int toolid, long? from = null, long? to = null)
-        {
-            if (from == null)
-            {
+        [HttpGet]
+        public async Task<IActionResult> GetId ([FromQuery] int toolid, [FromQuery] long? from = null, [FromQuery] long? to = null) {
+            if (from == null) {
                 from = DateTime.Now.Date.Ticks;
             }
-            if (to == null)
-            {
-                to = DateTime.Now.AddDays(1).Date.Ticks;
+            if (to == null) {
+                to = DateTime.Now.AddDays (1).Date.Ticks;
             }
-            var history = await _stateTransitionHistoryService.getToolHistory(toolid, from.Value, to.Value);
-            return Ok(new { values = history, total = history.Count });
+            var history = await _stateTransitionHistoryService.getToolHistory (toolid, from.Value, to.Value);
+            return Ok (new { values = history, total = history.Count });
 
         }
     }
