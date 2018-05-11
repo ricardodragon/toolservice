@@ -197,9 +197,7 @@ namespace toolservice.Service {
                 case ToolFieldEnum.TypeName:
                     queryTool = queryTool.Where (x => x.typeName.Contains (fieldValue));
                     break;
-                case ToolFieldEnum.UnitOfMeasurement:
-                    queryTool = queryTool.Where (x => x.toolType.unitOfMeasurement.Contains (fieldValue));
-                    break;
+
                 default:
                     break;
             }
