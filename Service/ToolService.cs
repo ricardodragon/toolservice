@@ -26,7 +26,7 @@ namespace toolservice.Service {
 
         public async Task<(List<Tool>, int)> getTools (int startat, int quantity, ToolFieldEnum fieldFilter,
             string fieldValue, ToolFieldEnum orderField, OrderEnum order) {
-            var queryTool = _context.Tools.Where (x => x.toolId > 0);
+            var queryTool = _context.Tools.Where (x => x.toolId > 0).Include (x => x.toolType).AsQueryable ();
             queryTool = ApplyFilter (queryTool, fieldFilter, fieldValue);
             queryTool = ApplyOrder (queryTool, orderField, order);
             var toolId = await queryTool
@@ -51,11 +51,13 @@ namespace toolservice.Service {
         }
         public async Task<List<Tool>> getToolsAvailable () {
             var tools = await _context.Tools
-                .Where (x => x.currentThingId == null && x.status == stateEnum.available.ToString ())
+                .Where (x => x.currentThingId == null && x.status == stateEnum.available.ToString ()).Include (x => x.toolType)
                 .ToListAsync ();
             foreach (var tool in tools) {
                 var toolType = await _toolTypeService.getToolType (tool.typeId.Value);
                 tool.typeName = toolType.name;
+                tool.lifeCycle = toolType.lifeCycle;
+                tool.unitOfMeasurement = toolType.unitOfMeasurement;
 
                 if (tool.currentThingId != null) {
                     var (thing, status) = await _thingService.getThing (tool.currentThingId.Value);
@@ -68,12 +70,13 @@ namespace toolservice.Service {
 
         public async Task<List<Tool>> getToolsInUSe () {
             var tools = await _context.Tools
-                .Where (x => x.currentThingId != null)
+                .Where (x => x.currentThingId != null).Include (x => x.toolType)
                 .ToListAsync ();
             foreach (var tool in tools) {
                 var toolType = await _toolTypeService.getToolType (tool.typeId.Value);
                 tool.typeName = toolType.name;
-
+                tool.lifeCycle = toolType.lifeCycle;
+                tool.unitOfMeasurement = toolType.unitOfMeasurement;
                 if (tool.currentThingId != null) {
                     var (thing, status) = await _thingService.getThing (tool.currentThingId.Value);
                     if (status == HttpStatusCode.OK)
@@ -84,13 +87,12 @@ namespace toolservice.Service {
         }
         public async Task<List<Tool>> getToolsOnThing (int thingId) {
             var tools = await _context.Tools
-                .Where (x => x.currentThingId == thingId)
+                .Where (x => x.currentThingId == thingId).Include (x => x.toolType)
                 .ToListAsync ();
             if (tools == null)
                 return null;
             var returnList = new List<Tool> ();
             foreach (var tool in tools) {
-
                 returnList.Add (await getTool (tool.toolId));
             }
             return tools;
@@ -98,7 +100,7 @@ namespace toolservice.Service {
 
         public async Task<Tool> getTool (int toolId) {
             var tool = await _context.Tools
-                .Where (x => x.toolId == toolId)
+                .Where (x => x.toolId == toolId).Include (x => x.toolType)
                 .Include ("informations")
                 .Include ("informations.informationAdditional")
                 .FirstOrDefaultAsync ();
@@ -106,6 +108,8 @@ namespace toolservice.Service {
                 return null;
             var toolType = await _toolTypeService.getToolType (tool.typeId.Value);
             tool.typeName = toolType.name;
+            tool.lifeCycle = toolType.lifeCycle;
+            tool.unitOfMeasurement = toolType.unitOfMeasurement;
 
             if (tool.currentThingId != null) {
                 var (thing, status) = await _thingService.getThing (tool.currentThingId.Value);
@@ -151,7 +155,7 @@ namespace toolservice.Service {
             tool.status = toolDB.status;
             _context.Tools.Update (tool);
             await _context.SaveChangesAsync ();
-            return tool;
+            return await getTool (tool.toolId);
         }
 
         public async Task<Tool> deleteTool (int toolId) {
@@ -194,7 +198,7 @@ namespace toolservice.Service {
                     queryTool = queryTool.Where (x => x.typeName.Contains (fieldValue));
                     break;
                 case ToolFieldEnum.UnitOfMeasurement:
-                    queryTool = queryTool.Where (x => x.unitOfMeasurement.Contains (fieldValue));
+                    queryTool = queryTool.Where (x => x.toolType.unitOfMeasurement.Contains (fieldValue));
                     break;
                 default:
                     break;

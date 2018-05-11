@@ -21,6 +21,7 @@ namespace toolservice.Model {
         [NotMapped]
         public IList<ThingGroup> thingGroups { get; set; }
         public string unitOfMeasurement { get; set; }
+        public double lifeCycle { get; set; }
 
     }
 }
