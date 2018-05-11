@@ -17,6 +17,12 @@ this used for CRUD of tool type
 * thingGroupIds: array with id thing group
   * int
 * status: status of tool type
+* lifeCycle: life time total
+  * Double
+  * Required
+* unitOfMeasurement: unit of measurement of life
+  * String
+  * Required
 
 ### JSON Example
 
@@ -27,7 +33,9 @@ this used for CRUD of tool type
   "description": "Criação tipo para as ferramentas update",
   "thingGroupIds": [2],
   "status": "available",
+  "lifeCycle": 0,
   "unitOfMeasurement": "minute"
+    
 }
 ```
 
@@ -59,13 +67,11 @@ this used for CRUD of tool type
 * code: code of tool
   * String (100 characters)
 * lifeCycle: life time total
-  * Double
-  * Required
+  * Cannot be changed
 * currentLife: life consumed of tool
   * Double
 * unitOfMeasurement: unit of measurement of life
-  * String
-  * Required
+  * Cannot be changed
 * position: position of the tool
   * Nullable Integer
 * typeId: id of tool type
