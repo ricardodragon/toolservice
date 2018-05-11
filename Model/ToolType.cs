@@ -20,6 +20,7 @@ namespace toolservice.Model {
 
         [NotMapped]
         public IList<ThingGroup> thingGroups { get; set; }
+        public string unitOfMeasurement { get; set; }
 
     }
 }

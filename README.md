@@ -26,7 +26,8 @@ this used for CRUD of tool type
   "name": "Tipo",
   "description": "Criação tipo para as ferramentas update",
   "thingGroupIds": [2],
-  "status": "available"
+  "status": "available",
+  "unitOfMeasurement": "minute"
 }
 ```
 
