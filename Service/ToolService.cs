@@ -26,7 +26,7 @@ namespace toolservice.Service {
 
         public async Task<(List<Tool>, int)> getTools (int startat, int quantity, ToolFieldEnum fieldFilter,
             string fieldValue, ToolFieldEnum orderField, OrderEnum order) {
-            var queryTool = _context.Tools.Where (x => x.toolId > 0).Include (x => x.toolType).AsQueryable ();
+            var queryTool = _context.Tools.Where (x => x.toolId > 0);
             queryTool = ApplyFilter (queryTool, fieldFilter, fieldValue);
             queryTool = ApplyOrder (queryTool, orderField, order);
             var toolId = await queryTool
@@ -51,7 +51,7 @@ namespace toolservice.Service {
         }
         public async Task<List<Tool>> getToolsAvailable () {
             var tools = await _context.Tools
-                .Where (x => x.currentThingId == null && x.status == stateEnum.available.ToString ()).Include (x => x.toolType)
+                .Where (x => x.currentThingId == null && x.status == stateEnum.available.ToString ())
                 .ToListAsync ();
             foreach (var tool in tools) {
                 var toolType = await _toolTypeService.getToolType (tool.typeId.Value);
@@ -70,7 +70,7 @@ namespace toolservice.Service {
 
         public async Task<List<Tool>> getToolsInUSe () {
             var tools = await _context.Tools
-                .Where (x => x.currentThingId != null).Include (x => x.toolType)
+                .Where (x => x.currentThingId != null)
                 .ToListAsync ();
             foreach (var tool in tools) {
                 var toolType = await _toolTypeService.getToolType (tool.typeId.Value);
@@ -87,7 +87,7 @@ namespace toolservice.Service {
         }
         public async Task<List<Tool>> getToolsOnThing (int thingId) {
             var tools = await _context.Tools
-                .Where (x => x.currentThingId == thingId).Include (x => x.toolType)
+                .Where (x => x.currentThingId == thingId)
                 .ToListAsync ();
             if (tools == null)
                 return null;
@@ -100,7 +100,7 @@ namespace toolservice.Service {
 
         public async Task<Tool> getTool (int toolId) {
             var tool = await _context.Tools
-                .Where (x => x.toolId == toolId).Include (x => x.toolType)
+                .Where (x => x.toolId == toolId)
                 .Include ("informations")
                 .Include ("informations.informationAdditional")
                 .FirstOrDefaultAsync ();

@@ -23,7 +23,6 @@ namespace toolservice.Model {
         public string codeClient { get; set; }
         public int? position { get; set; }
         public double currentLife { get; set; }
-        public ToolType toolType { get; set; }
 
         [Required]
         [ToolTypeValidation]
