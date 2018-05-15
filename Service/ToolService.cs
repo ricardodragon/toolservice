@@ -42,8 +42,12 @@ namespace toolservice.Service {
             List<Tool> tools = new List<Tool> ();
             foreach (var item in toolId) {
                 var tool = await getTool (item);
-                if (tool != null)
+                if (tool != null && fieldFilter != ToolFieldEnum.TypeName)
                     tools.Add (tool);
+                else if (tool != null && fieldFilter == ToolFieldEnum.TypeName)
+                    if (tool.typeName == fieldValue)
+                        tools.Add (tool);
+
             }
 
             return (tools, totalCount);
@@ -194,9 +198,6 @@ namespace toolservice.Service {
                 case ToolFieldEnum.Status:
                     queryTool = queryTool.Where (x => x.status.Contains (fieldValue));
                     break;
-                case ToolFieldEnum.TypeName:
-                    queryTool = queryTool.Where (x => x.typeName.Contains (fieldValue));
-                    break;
 
                 default:
                     break;
@@ -236,12 +237,6 @@ namespace toolservice.Service {
                         queryTags = queryTags.OrderBy (x => x.status);
                     else
                         queryTags = queryTags.OrderByDescending (x => x.status);
-                    break;
-                case ToolFieldEnum.TypeName:
-                    if (order == OrderEnum.Ascending)
-                        queryTags = queryTags.OrderBy (x => x.typeName);
-                    else
-                        queryTags = queryTags.OrderByDescending (x => x.typeName);
                     break;
                 default:
                     queryTags = queryTags.OrderBy (x => x.toolId);
