@@ -112,7 +112,7 @@ this used for CRUD of tool type
     * startat: represent where the list starts t the database (Default=0)
     * quantity: number of resuls in the query (Default=50)
     * orderField: Field in which the list will be order by (Possible Values:
-      Name,Description,SerialNumber,Code,UnitOfMeasurement,TypeName
+      Name,Description,SerialNumber,Code,UnitOfMeasurement,TypeName,typeId
       Status)(Default=id)
     * order: Represent the order of the listing (Possible Values: ascending,
       descending)(Default=Ascending)

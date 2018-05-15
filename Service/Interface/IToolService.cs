@@ -23,7 +23,8 @@ namespace toolservice.Service.Interface {
         SerialNumber,
         Code,
         TypeName,
-        Status
+        Status,
+        typeId
 
     }
 }

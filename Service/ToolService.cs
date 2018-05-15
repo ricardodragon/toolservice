@@ -47,6 +47,9 @@ namespace toolservice.Service {
                 else if (tool != null && fieldFilter == ToolFieldEnum.TypeName)
                     if (tool.typeName == fieldValue)
                         tools.Add (tool);
+                    else if (tool != null && fieldFilter == ToolFieldEnum.typeId)
+                    if (tool.typeId.ToString () == fieldValue)
+                        tools.Add (tool);
 
             }
 
